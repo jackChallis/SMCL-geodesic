@@ -2,6 +2,8 @@
 
 A Python implementation of the San Mateo County Libraries (SMCL) logo geometry, officially referred to as the "Burst of Knowledge."
 
+![Burst of Knowledge](burst_of_knowledge.png)
+
 ## About the Design
 
 Geometrically, the logo represents a geodesic sphere (specifically, a subdivided icosahedron) composed of floating, disconnected triangles. The design symbolizes the spread of information and the convergence of shared ideas into a central hub.

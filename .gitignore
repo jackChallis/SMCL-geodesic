@@ -35,3 +35,7 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Manim output
+media/
+*_frame.png
