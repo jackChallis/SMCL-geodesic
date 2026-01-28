@@ -2,7 +2,7 @@
 
 A Python implementation of the San Mateo County Libraries (SMCL) logo geometry, officially referred to as the "Burst of Knowledge."
 
-![Burst of Knowledge](burst_of_knowledge.png)
+![Burst of Knowledge](preview.png)
 
 ## About the Design
 
