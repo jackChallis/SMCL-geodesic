@@ -130,45 +130,57 @@ def project_to_2d(triangles_3d, view_angle_x=0.3, view_angle_y=0.2):
 
 
 class LogoStyle(Scene):
-    """Static 2D logo-style view of the geodesic sphere."""
+    """2D logo-style view with fade-in and rotation."""
 
     def construct(self):
+        smcl_blue = "#4169E1"
+
         # Create 3D triangles
         triangles_3d, _, _ = create_geodesic_triangles_3d(
             subdivisions=2, shrink_factor=0.75, scale=2.5
         )
 
-        # Project to 2D with a nice viewing angle
-        triangles_2d, z_depths = project_to_2d(
-            triangles_3d, view_angle_x=0.4, view_angle_y=0.3
-        )
+        def create_frame(angle_y, base_angle_x=0.4):
+            """Create a frame of the rotating sphere at a given angle."""
+            rot_x = rotation_matrix(np.array([1, 0, 0]), base_angle_x)
+            rot_y = rotation_matrix(np.array([0, 1, 0]), angle_y)
+            rot = rot_y @ rot_x
 
-        # Sort by depth (back to front)
-        sorted_indices = np.argsort(z_depths)
+            triangles_2d = []
+            z_depths = []
 
-        smcl_blue = "#4169E1"
+            for tri in triangles_3d:
+                rotated = (rot @ tri.T).T
+                tri_2d = rotated[:, :2]
+                triangles_2d.append(tri_2d)
+                z_depths.append(np.mean(rotated[:, 2]))
 
-        # Create all triangles
-        triangle_group = VGroup()
+            sorted_indices = np.argsort(z_depths)
 
-        for idx in sorted_indices:
-            tri_2d = triangles_2d[idx]
-            z = z_depths[idx]
+            triangle_group = VGroup()
 
-            # Vary opacity based on depth for 3D effect
-            opacity = 0.6 + 0.4 * (z + 2.5) / 5.0
-            opacity = np.clip(opacity, 0.4, 1.0)
+            for idx in sorted_indices:
+                tri_2d = triangles_2d[idx]
+                z = z_depths[idx]
+                opacity = 0.6 + 0.4 * (z + 2.5) / 5.0
+                opacity = np.clip(opacity, 0.4, 1.0)
 
-            points = [np.array([v[0], v[1], 0]) for v in tri_2d]
+                points = [np.array([v[0], v[1], 0]) for v in tri_2d]
 
-            triangle = Polygon(
-                *points,
-                fill_color=smcl_blue,
-                fill_opacity=opacity,
-                stroke_color=smcl_blue,
-                stroke_width=0.5,
-            )
-            triangle_group.add(triangle)
+                triangle = Polygon(
+                    *points,
+                    fill_color=smcl_blue,
+                    fill_opacity=opacity,
+                    stroke_color=smcl_blue,
+                    stroke_width=0.5,
+                )
+                triangle_group.add(triangle)
+
+            return triangle_group
+
+        # Create initial frame
+        initial_angle = 0.3
+        triangle_group = create_frame(initial_angle)
 
         # Animate the logo appearing
         self.play(
@@ -179,7 +191,22 @@ class LogoStyle(Scene):
             )
         )
 
-        self.wait(2)
+        self.wait(0.5)
+
+        # Now rotate the sphere
+        current_frame = triangle_group
+        num_steps = 90  # ~3 seconds at 30fps
+        for i in range(1, num_steps + 1):
+            angle = initial_angle + 2 * PI * i / num_steps
+            new_frame = create_frame(angle)
+
+            self.remove(current_frame)
+            self.add(new_frame)
+            current_frame = new_frame
+
+            self.wait(1/30)
+
+        self.wait(1)
 
 
 class LogoRotate2D(Scene):
