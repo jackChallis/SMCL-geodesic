@@ -54,6 +54,54 @@ visualize(polys, facecolor='#FF6B6B', edgecolor='#FF6B6B')
 
 The script generates an interactive 3D matplotlib visualization and saves a PNG image (`burst_of_knowledge.png`).
 
+## Manim Animations
+
+This project includes Manim animations for creating videos of the geodesic sphere.
+
+### 3D Rotating Animation
+
+```bash
+# Low quality preview (fast)
+manim -pql geodesic_3d.py RotatingGeodesic
+
+# High quality
+manim -pqh geodesic_3d.py RotatingGeodesic
+
+# 4K quality
+manim -pqk geodesic_3d.py RotatingGeodesic
+```
+
+Available 3D scenes:
+- `RotatingGeodesic` - Smooth camera rotation around the sphere
+- `GeodesicBuildUp` - Triangles fade in with a staggered animation, then rotate
+
+### 2D Logo-Style Animation
+
+```bash
+# Static logo view
+manim -pql geodesic_2d.py LogoStyle
+
+# Rotating 2D projection
+manim -pql geodesic_2d.py LogoRotate2D
+
+# Build-up animation with triangles flying in
+manim -pql geodesic_2d.py LogoBuildUp
+```
+
+Available 2D scenes:
+- `LogoStyle` - Static 2D projection resembling the SMCL logo
+- `LogoRotate2D` - 2D projection with the sphere rotating
+- `LogoBuildUp` - Triangles fly in from outside to form the logo
+
+### Quality Flags
+
+- `-pql` - Preview, low quality (480p, 15fps) - fast rendering
+- `-pqm` - Preview, medium quality (720p, 30fps)
+- `-pqh` - Preview, high quality (1080p, 60fps)
+- `-pqk` - Preview, 4K quality (2160p, 60fps)
+
+Output videos are saved to `media/videos/`.
+
 ## License
 
 MIT License
